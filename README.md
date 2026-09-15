@@ -218,4 +218,3 @@ El sistema maneja las siguientes prioridades:
 
 Proyecto desarrollado como parte de una prueba/práctica de desarrollo de software.
 
-...
