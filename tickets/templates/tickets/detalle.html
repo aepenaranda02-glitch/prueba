@@ -1,3 +1,4 @@
+{% extends './tickets/base.html' %}
 {% comment %}
 ============================================================
  DETALLE DE UN TICKET
@@ -20,7 +21,6 @@
      cambia el |date:"d/m/Y H:i" por lo que quieras.
 ============================================================
 {% endcomment %}
-{% extends 'tickets/base.html' %}
 
 {% block title %}#{{ ticket.id }} · {{ ticket.titulo }}{% endblock %}
 
