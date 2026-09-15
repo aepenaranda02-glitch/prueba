@@ -1,7 +1,39 @@
 from django.contrib import messages
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 
 from .models import Comentario, Ticket
+
+def login_view(request):
+    if request.user.is_authenticated:
+        return redirect("lista_tickets")
+
+    if request.method == "POST":
+        username = request.POST.get("username", "").strip()
+        password = request.POST.get("password", "")
+
+        user = authenticate(
+            request,
+            username=username,
+            password=password,
+        )
+
+        if user is not None:
+            login(request, user)
+            return redirect("lista_tickets")
+
+        messages.error(
+            request,
+            "Usuario o contraseña incorrectos.",
+        )
+
+    return render(request, "tickets/login.html")
+
+
+def logout_view(request):
+    logout(request)
+    return redirect("login")
 
 
 def lista_tickets(request):
