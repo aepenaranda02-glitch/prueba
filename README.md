@@ -217,3 +217,5 @@ El sistema maneja las siguientes prioridades:
 ## Autor
 
 Proyecto desarrollado como parte de una prueba/práctica de desarrollo de software.
+
+...
