@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -19,13 +20,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-i#nii(7ygjk^zci250_+3uzw)fe9)jr84gk5we$84lc1xc)lj9'
+SECRET_KEY = os.environ.get(
+    'SECRET_KEY',
+    'django-insecure-i#nii(7ygjk^zci250_+3uzw)fe9)jr84gk5we$84lc1xc)lj9'
+)
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.onrender.com']
+
+CSRF_TRUSTED_ORIGINS = ['https://*.onrender.com']
 
 
 # Application definition
@@ -42,6 +46,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -74,19 +79,29 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'mssql',
-        'NAME': 'Tickets',
-        'HOST': 'localhost',
-        'PORT': '',
-        'OPTIONS': {
-    'driver': 'ODBC Driver 18 for SQL Server',
-    'trusted_connection': 'yes',
-    'extra_params': 'TrustServerCertificate=yes',
-}, 
-    },
-}
+if os.environ.get('RENDER'):
+    # En Render: SQLite temporal (datos no persistentes, solo demo)
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
+else:
+    # En local: SQL Server (sin cambios)
+    DATABASES = {
+        'default': {
+            'ENGINE': 'mssql',
+            'NAME': 'Tickets',
+            'HOST': 'localhost',
+            'PORT': '',
+            'OPTIONS': {
+                'driver': 'ODBC Driver 18 for SQL Server',
+                'trusted_connection': 'yes',
+                'extra_params': 'TrustServerCertificate=yes',
+            },
+        },
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -123,6 +138,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
