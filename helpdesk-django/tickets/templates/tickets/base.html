@@ -1,0 +1,65 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}HelpDesk · Sistema de Tickets{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'tickets/css/style.css' %}">
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header class="app-header">
+        <div class="container header-inner">
+            <a href="{% url 'lista_tickets' %}" class="brand">
+                <span class="brand-icon">🎫</span>
+                <span class="brand-name">HelpDesk</span>
+            </a>
+
+            <nav class="nav">
+                <a href="{% url 'lista_tickets' %}" class="nav-link">Tickets</a>
+                <a href="{% url 'crear_ticket' %}" class="btn btn-primary">+ Nuevo Ticket</a>
+
+                {% if user.is_authenticated %}
+                    <span class="nav-user">
+                        👤 {{ user.username }}
+                        {% if user.groups.all %}
+                            <span class="badge badge-neutral">
+                                {{ user.groups.all.0.name }}
+                            </span>
+                        {% endif %}
+                    </span>
+                    <a href="{% url 'logout' %}" class="nav-link">Salir</a>
+                {% endif %}
+            </nav>
+        </div>
+    </header>
+
+    <!-- MENSAJES FLASH -->
+    {% if messages %}
+    <div class="container messages">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags|default:'info' }}">
+            <span>{{ message }}</span>
+            <button type="button" class="alert-close" aria-label="Cerrar">&times;</button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- CONTENIDO -->
+    <main class="container main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="app-footer">
+        <div class="container">
+            <p>Sistema de Tickets · Django</p>
+        </div>
+    </footer>
+
+    <script src="{% static 'tickets/js/main.js' %}"></script>
+</body>
+</html>

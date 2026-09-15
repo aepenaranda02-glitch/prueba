@@ -1,0 +1,151 @@
+"""
+Django settings for config project.
+Adaptado para Render + PostgreSQL.
+"""
+import os
+from pathlib import Path
+
+import dj_database_url
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+
+# ============================================================
+# SEGURIDAD
+# ============================================================
+SECRET_KEY = os.environ.get(
+    "SECRET_KEY",
+    "django-insecure-i#nii(7ygjk^zci250_+3uzw)fe9)jr84gk5we$84lc1xc)lj9",
+)
+
+# DEBUG=False cuando estamos en Render
+DEBUG = "RENDER" not in os.environ
+
+ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
+RENDER_EXTERNAL_HOSTNAME = os.environ.get("RENDER_EXTERNAL_HOSTNAME")
+if RENDER_EXTERNAL_HOSTNAME:
+    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
+
+CSRF_TRUSTED_ORIGINS = []
+if RENDER_EXTERNAL_HOSTNAME:
+    CSRF_TRUSTED_ORIGINS.append(f"https://{RENDER_EXTERNAL_HOSTNAME}")
+
+
+# ============================================================
+# APPS
+# ============================================================
+INSTALLED_APPS = [
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    "tickets",
+]
+
+
+# ============================================================
+# MIDDLEWARE
+# ============================================================
+MIDDLEWARE = [
+    "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",       # ← estáticos en producción
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "tickets.middleware.LoginRequiredMiddleware",       # ← protege /tickets/*
+]
+
+
+ROOT_URLCONF = "config.urls"
+
+
+# ============================================================
+# TEMPLATES
+# ============================================================
+TEMPLATES = [
+    {
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
+            ],
+        },
+    },
+]
+
+
+WSGI_APPLICATION = "config.wsgi.application"
+
+
+# ============================================================
+# BASE DE DATOS
+# - Local: SQLite
+# - Render: PostgreSQL (vía DATABASE_URL)
+# ============================================================
+DATABASES = {
+    "default": dj_database_url.config(
+        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
+        conn_max_age=600,
+        ssl_require=bool(os.environ.get("DATABASE_URL")),
+    )
+}
+
+
+# ============================================================
+# VALIDACIÓN DE CONTRASEÑAS
+# ============================================================
+AUTH_PASSWORD_VALIDATORS = [
+    {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
+    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
+    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
+    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
+]
+
+
+# ============================================================
+# INTERNACIONALIZACIÓN
+# ============================================================
+LANGUAGE_CODE = "es-co"
+TIME_ZONE = "America/Bogota"
+USE_I18N = True
+USE_TZ = True
+
+
+# ============================================================
+# ARCHIVOS ESTÁTICOS (WhiteNoise)
+# ============================================================
+STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
+
+
+# ============================================================
+# AUTENTICACIÓN
+# ============================================================
+LOGIN_URL = "/accounts/login/"
+LOGIN_REDIRECT_URL = "/tickets/"
+LOGOUT_REDIRECT_URL = "/accounts/login/"
+
+
+# ============================================================
+# DEFAULT PK
+# ============================================================
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
