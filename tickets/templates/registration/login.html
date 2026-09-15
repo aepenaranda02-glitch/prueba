@@ -1,0 +1,90 @@
+{% extends 'tickets/base.html' %}
+{% load static %}
+
+{% comment %}
+============================================================
+ LOGIN
+============================================================
+ Plantilla que Django busca automáticamente en
+ registration/login.html cuando usamos
+ include('django.contrib.auth.urls').
+
+ Variables del form:
+   - form.username
+   - form.password
+   - form.errors
+============================================================
+{% endcomment %}
+
+{% block title %}Iniciar sesión · HelpDesk{% endblock %}
+
+{% block content %}
+
+<div class="login-wrap">
+    <div class="login-card">
+        <div class="login-head">
+            <span class="login-icon">🎫</span>
+            <h1>HelpDesk</h1>
+            <p class="login-sub">Sistema de Tickets</p>
+        </div>
+
+        {% if form.errors %}
+            <div class="alert alert-error" style="margin-bottom:16px;">
+                Usuario o contraseña incorrectos. Intenta de nuevo.
+            </div>
+        {% endif %}
+
+        {% if next %}
+            {% if user.is_authenticated %}
+                <div class="alert alert-warning" style="margin-bottom:16px;">
+                    Tu cuenta no tiene acceso a esta página.
+                </div>
+            {% else %}
+                <div class="alert alert-info" style="margin-bottom:16px;">
+                    Inicia sesión para continuar.
+                </div>
+            {% endif %}
+        {% endif %}
+
+        <form method="post" class="login-form">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="id_username">Usuario</label>
+                <input
+                    type="text"
+                    name="username"
+                    id="id_username"
+                    autocomplete="username"
+                    autofocus
+                    required
+                    placeholder="Tu usuario"
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="id_password">Contraseña</label>
+                <input
+                    type="password"
+                    name="password"
+                    id="id_password"
+                    autocomplete="current-password"
+                    required
+                    placeholder="Tu contraseña"
+                >
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block">
+                Entrar
+            </button>
+        </form>
+
+        <div class="login-hint">
+            <p><strong>Cuentas de prueba:</strong></p>
+            <p>👤 Agente: <code>agente / agente123</code></p>
+            <p>👤 Solicitante: <code>solicitante / solicitante123</code></p>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

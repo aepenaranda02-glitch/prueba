@@ -660,3 +660,144 @@ textarea { resize: vertical; min-height: 90px; }
     .filter-actions { width: 100%; }
     .filter-actions .btn { flex: 1; }
 }
+/* ============================================
+   LOGIN
+   ============================================ */
+.login-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 60vh;
+    padding: 20px;
+}
+
+.login-card {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    padding: 32px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 4px 16px rgba(0,0,0,.06);
+}
+
+.login-head {
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.login-icon {
+    font-size: 40px;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.login-head h1 {
+    margin: 0;
+    font-size: 24px;
+}
+
+.login-sub {
+    color: #666;
+    margin: 4px 0 0;
+    font-size: 14px;
+}
+
+.login-form .form-group {
+    margin-bottom: 16px;
+}
+
+.login-form label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.login-form input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+.login-form input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0,123,255,.15);
+}
+
+.btn-block {
+    width: 100%;
+    padding: 10px;
+    font-size: 15px;
+    margin-top: 8px;
+}
+
+.login-hint {
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px dashed #e0e0e0;
+    font-size: 13px;
+    color: #555;
+}
+
+.login-hint p {
+    margin: 4px 0;
+}
+
+.login-hint code {
+    background: #f4f4f4;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+/* Header con info de usuario */
+.user-bar {
+    background: #f8f9fa;
+    border-bottom: 1px solid #e0e0e0;
+    padding: 8px 0;
+    font-size: 14px;
+}
+
+.user-bar .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.user-bar .role-badge {
+    background: #007bff;
+    color: #fff;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    margin-left: 6px;
+}
+
+.user-bar .role-badge.agente {
+    background: #28a745;
+}
+
+.user-bar form {
+    margin: 0;
+}
+
+.btn-logout {
+    padding: 5px 12px;
+    background: #dc3545;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.btn-logout:hover {
+    background: #c82333;
+}
