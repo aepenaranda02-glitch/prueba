@@ -4,217 +4,139 @@ Aplicación web desarrollada con Django para la gestión y seguimiento de ticket
 
 ## Descripción
 
-El sistema permite registrar tickets de soporte, consultar su información, gestionar su prioridad y estado, y agregar comentarios relacionados con cada ticket.
+El sistema permite autenticar usuarios, registrar tickets de soporte, consultar su información detallada y gestionar su estado en una plataforma web responsiva.
 
-La aplicación utiliza Django como framework backend y SQL Server como sistema de gestión de base de datos.
+La aplicación utiliza Django como framework backend, SQLite como base de datos ligera de desarrollo, WhiteNoise para archivos estáticos y Gunicorn/Render para despliegue en producción.
 
 ## Tecnologías utilizadas
 
-* Python
-* Django
-* SQL Server
-* Microsoft SQL Server Management Studio (SSMS)
-* mssql-django
-* pyodbc
-* HTML
-* CSS
-* JavaScript
+* Python 3.12+
+* Django 4.2+
+* SQLite3
+* Gunicorn
+* WhiteNoise
+* HTML5 / CSS3 / JavaScript
 
 ## Funcionalidades
 
-* Crear tickets.
-* Consultar tickets registrados.
-* Filtrar tickets por estado.
-* Filtrar tickets por prioridad.
-* Consultar el detalle de un ticket.
-* Cambiar el estado de un ticket.
-* Cambiar la prioridad de un ticket.
-* Agregar comentarios a los tickets.
-* Administrar los registros mediante el panel de administración de Django.
+* Autenticación de usuarios (Inicio de sesión y cierre de sesión protegidos).
+* Crear y registrar nuevos tickets de soporte.
+* Consultar el listado completo de tickets.
+* Consultar el detalle individual de cada ticket.
+* Población automática de datos iniciales/usuarios mediante comandos personalizados.
+* Administrar registros mediante el panel de administración de Django.
 
 ## Requisitos
 
 Antes de ejecutar el proyecto se necesita tener instalado:
 
-* Python 3.13 o compatible.
-* Microsoft SQL Server.
-* SQL Server Management Studio (SSMS).
-* ODBC Driver 18 for SQL Server.
-* Visual Studio Code (recomendado).
+* Python 3.12 o compatible (>= 3.10).
+* Pip (Gestor de paquetes de Python).
+* Git (Opcional, para clonación del repositorio).
+* Visual Studio Code (Recomendado).
 
 ## Instalación
 
 ### 1. Descargar o clonar el proyecto
 
-Ubicar el proyecto en una carpeta de trabajo.
+Ubicar el proyecto en una carpeta de trabajo o clonarlo mediante Git:
+
+git clone https://github.com/aepenaranda02-glitch/prueba.git
+cd prueba
 
 ### 2. Abrir la carpeta en Visual Studio Code
 
-Abrir la carpeta que contiene el archivo:
+Abrir la carpeta raíz `prueba` que contiene el archivo `manage.py`.
 
-`manage.py`
+### 3. Crear y activar el entorno virtual
 
-### 3. Instalar Django
+Crear un entorno virtual aislado para instalar las dependencias:
 
-Abrir una terminal dentro de la carpeta del proyecto y ejecutar:
+* En Windows:
+  python -m venv venv
+  venv\Scripts\activate
 
-```bash
-python -m pip install django
-```
+* En Linux / macOS:
+  python3 -m venv venv
+  source venv/bin/activate
 
-### 4. Instalar el conector para SQL Server
+### 4. Instalar dependencias del proyecto
 
-Ejecutar:
+Ejecutar en la terminal el siguiente comando para instalar Django, WhiteNoise y Gunicorn:
 
-```bash
-python -m pip install mssql-django
-```
-
-También se utiliza el controlador:
-
-```text
-ODBC Driver 18 for SQL Server
-```
+pip install -r requirements.txt
 
 ## Configuración de la base de datos
 
-El proyecto utiliza una base de datos SQL Server llamada:
+El proyecto utiliza SQLite por defecto, por lo que no requiere la instalación ni configuración de un servidor de base de datos externo. La configuración de conexión local se encuentra en:
 
-```text
-Tickets
-```
-
-La configuración se encuentra en:
-
-```text
 config/settings.py
-```
 
-La conexión utilizada para el entorno local es:
+## Migraciones y Datos Iniciales (Seed)
 
-```python
-DATABASES = {
-    'default': {
-        'ENGINE': 'mssql',
-        'NAME': 'Tickets',
-        'HOST': 'localhost',
-        'PORT': '',
-        'OPTIONS': {
-            'driver': 'ODBC Driver 18 for SQL Server',
-            'trusted_connection': 'yes',
-            'extra_params': 'TrustServerCertificate=yes',
-        },
-    },
-}
-```
+Para estructurar la base de datos y cargar automáticamente los datos y usuarios iniciales de prueba, ejecuta en orden:
 
-## Migraciones
-
-Después de configurar la base de datos, ejecutar:
-
-```bash
+# Aplicar migraciones del sistema
 python manage.py migrate
-```
 
-Este comando crea las tablas necesarias en la base de datos.
+# Cargar usuarios por defecto para pruebas rápidas
+python manage.py create_default_users
 
 ## Ejecutar el proyecto
 
-Desde la carpeta donde se encuentra `manage.py`, ejecutar:
+Desde la carpeta donde se encuentra manage.py, ejecutar:
 
-```bash
 python manage.py runserver
-```
 
-Luego abrir en el navegador:
+Luego abrir en el navegador web la siguiente dirección:
 
-```text
-http://127.0.0.1:8000/tickets/
-```
+http://127.0.0.1:8000/
 
 ## Panel de administración
 
-El proyecto también cuenta con el panel administrativo de Django:
+El proyecto cuenta con el panel administrativo de Django:
 
-```text
 http://127.0.0.1:8000/admin/
-```
 
-Para utilizarlo se debe crear un usuario administrador con:
+Para acceder o gestionar superusuarios, puedes crear una cuenta administradora ejecutando:
 
-```bash
 python manage.py createsuperuser
-```
 
 ## Estructura principal
 
-```text
-ANGEL PEÑA/
+prueba/
 │
 ├── config/
 │   ├── settings.py
 │   ├── urls.py
-│   └── ...
+│   ├── wsgi.py
+│   └── asgi.py
 │
 ├── tickets/
+│   ├── management/
+│   │   └── commands/
+│   │       └── create_default_users.py
 │   ├── migrations/
+│   ├── static/
 │   ├── templates/
 │   ├── admin.py
 │   ├── models.py
 │   ├── urls.py
 │   └── views.py
 │
-├── db.sqlite3
+├── build.sh
 ├── manage.py
-└── README.md
-```
+├── README.md
+├── requirements.txt
+└── runtime.txt
 
-## Base de datos
+## Despliegue en la Nube (Render / Railway)
 
-Las principales entidades utilizadas por el sistema son:
+El proyecto incluye archivos listos para producción (build.sh, runtime.txt y gunicorn):
 
-### Ticket
-
-Contiene información como:
-
-* Título
-* Descripción
-* Categoría
-* Prioridad
-* Estado
-* Fecha de creación
-* Fecha de actualización
-
-### Comentario
-
-Permite registrar comentarios asociados a un ticket.
-
-Cada comentario contiene:
-
-* Ticket relacionado
-* Título
-* Descripción
-* Fecha de registro
-
-## Estados de los tickets
-
-El sistema maneja los siguientes estados:
-
-* Abierto
-* En proceso
-* Resuelto
-* Cerrado
-
-## Prioridades
-
-El sistema maneja las siguientes prioridades:
-
-* Baja
-* Media
-* Alta
-* Crítica
+1. Build Command: ./build.sh
+2. Start Command: gunicorn config.wsgi:application
 
 ## Autor
 
-Proyecto desarrollado como parte de una prueba/práctica de desarrollo de software.
-
+Proyecto desarrollado como parte de una prueba/práctica de desarrollo de software por Ángel Peñaranda.
